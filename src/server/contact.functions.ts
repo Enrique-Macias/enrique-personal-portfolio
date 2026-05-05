@@ -12,6 +12,7 @@ export const sendContactMessage = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const RESEND_API_KEY = process.env.RESEND_API_KEY;
     const TO_EMAIL = process.env.TO_EMAIL;
+    const CONTACT_FROM = process.env.CONTACT_FROM ?? "Portfolio <onboarding@resend.dev>";
 
     if (!RESEND_API_KEY) {
       return {
@@ -42,7 +43,7 @@ export const sendContactMessage = createServerFn({ method: "POST" })
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Portfolio <onboarding@resend.dev>",
+        from: CONTACT_FROM,
         to: [TO_EMAIL],
         reply_to: data.email,
         subject: `Portfolio message from ${data.name}`,
