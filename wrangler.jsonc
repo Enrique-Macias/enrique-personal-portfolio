@@ -1,11 +1,23 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "enrique-personal-web",
-  "compatibility_date": "2025-09-24",
-  "compatibility_flags": ["nodejs_compat"],
-  "main": "@tanstack/react-start/server-entry",
-  "routes": [
-    { "pattern": "enriquemacias.dev", "custom_domain": true },
-    { "pattern": "www.enriquemacias.dev", "custom_domain": true },
-  ],
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "enrique-personal-web",
+	"compatibility_date": "2025-09-24",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"main": "@tanstack/react-start/server-entry",
+	"routes": [
+		{
+			"pattern": "enriquemacias.dev",
+			"custom_domain": true
+		},
+		{
+			"pattern": "www.enriquemacias.dev",
+			"custom_domain": true
+		},
+	],
+	"vars": {
+		"CONTACT_FROM": "Portfolio <hello@enriquemacias.dev>",
+		"TO_EMAIL": "enriquemaciaslpz@gmail.com"
+	},
 }
