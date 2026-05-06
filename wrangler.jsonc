@@ -6,13 +6,17 @@
 		"nodejs_compat"
 	],
 	"main": "@tanstack/react-start/server-entry",
+	"workers_dev": false,
+	"preview_urls": false,
 	"routes": [
 		{
 			"pattern": "enriquemacias.dev",
+			"zone_name": "enriquemacias.dev",
 			"custom_domain": true
 		},
 		{
 			"pattern": "www.enriquemacias.dev",
+			"zone_name": "enriquemacias.dev",
 			"custom_domain": true
 		},
 	],
