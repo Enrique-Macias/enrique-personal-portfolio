@@ -1,18 +1,4 @@
-export const skillGroups = [
-  {
-    label: "Languages",
-    items: ["TypeScript", "JavaScript", "Python", "Swift"],
-  },
-  {
-    label: "Frameworks & Runtimes",
-    items: ["React", "Node.js", "SwiftUI", "TanStack"],
-  },
-  {
-    label: "Databases",
-    items: ["PostgreSQL", "MongoDB", "Firebase", "Supabase"],
-  },
-  {
-    label: "Tools & Platforms",
-    items: ["Git", "Docker", "Vercel", "Cloudinary", "Figma"],
-  },
-];
+import { dictionaries } from "@/i18n";
+import type { SkillGroup } from "@/i18n/types";
+
+export const skillGroups: SkillGroup[] = dictionaries.en.skills.groups;

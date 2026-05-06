@@ -1,13 +1,16 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
 import { TechBadge } from "@/components/ui/TechBadge";
-import { skillGroups } from "@/data/skills";
+import { useLanguage } from "@/i18n";
 
 export function Skills() {
+  const { dictionary } = useLanguage();
+  const skillGroups = dictionary.skills.groups;
+
   return (
     <section id="skills" className="px-6 py-24 sm:py-32">
       <div className="mx-auto max-w-6xl">
-        <SectionHeading eyebrow="// Stack" title="Tools I reach for." />
+        <SectionHeading eyebrow={dictionary.skills.eyebrow} title={dictionary.skills.title} />
         <div className="grid gap-8 sm:grid-cols-2">
           {skillGroups.map((g, i) => (
             <RevealOnScroll key={g.label} delay={i * 0.05}>

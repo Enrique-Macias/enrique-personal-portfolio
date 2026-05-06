@@ -9,21 +9,20 @@ import { Experience } from "@/components/sections/Experience";
 import { Skills } from "@/components/sections/Skills";
 import { Certifications } from "@/components/sections/Certifications";
 import { Contact } from "@/components/sections/Contact";
+import { dictionaries } from "@/i18n";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Enrique Macías López — CS Student & AI Builder" },
+      { title: dictionaries.en.meta.homeTitle },
       {
         name: "description",
-        content:
-          "Portfolio of Enrique Macías López — final-year CS student at Tec de Monterrey, Software Developer Intern at Softtek, building AI-powered tools and agentic workflows.",
+        content: dictionaries.en.meta.homeDescription,
       },
-      { property: "og:title", content: "Enrique Macías López — CS Student & AI Builder" },
+      { property: "og:title", content: dictionaries.en.meta.homeTitle },
       {
         property: "og:description",
-        content:
-          "Building the future with AI, one workflow at a time. Projects, experience, and contact.",
+        content: dictionaries.en.meta.homeOgDescription,
       },
     ],
   }),

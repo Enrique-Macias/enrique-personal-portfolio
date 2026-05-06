@@ -2,9 +2,12 @@ import { ArrowUpRight, Github } from "lucide-react";
 import { NodeCanvas } from "@/components/ui/NodeCanvas";
 import { TechBadge } from "@/components/ui/TechBadge";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
-import { featuredProject } from "@/data/projects";
+import { useLanguage } from "@/i18n";
 
 export function FeaturedProject() {
+  const { dictionary } = useLanguage();
+  const featuredProject = dictionary.featured.project;
+
   return (
     <section id="featured" className="relative px-6 py-24 sm:py-32">
       {/* gradient wash */}
@@ -18,7 +21,7 @@ export function FeaturedProject() {
       <div className="relative mx-auto max-w-6xl">
         <RevealOnScroll className="mb-10 max-w-2xl">
           <p className="font-mono text-xs uppercase tracking-[0.25em] text-gradient">
-            // Featured build
+            {dictionary.featured.eyebrow}
           </p>
           <h2 className="mt-3 text-4xl font-medium tracking-tight text-foreground sm:text-5xl md:text-6xl">
             {featuredProject.title}
@@ -43,7 +46,7 @@ export function FeaturedProject() {
                       disabled
                       className="inline-flex cursor-not-allowed items-center gap-2 rounded-full bg-gradient-brand px-5 py-2.5 text-sm font-medium text-[var(--background)] opacity-60"
                     >
-                      Live demo
+                      {dictionary.featured.liveDemo}
                       <ArrowUpRight className="h-4 w-4" />
                     </button>
                     <button
@@ -51,7 +54,7 @@ export function FeaturedProject() {
                       className="inline-flex cursor-not-allowed items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm text-muted-foreground"
                     >
                       <Github className="h-4 w-4" />
-                      Source — coming soon
+                      {dictionary.featured.sourceComingSoon}
                     </button>
                   </div>
                 </div>

@@ -39,7 +39,15 @@ function CmsVisual() {
   return (
     <svg viewBox="0 0 240 110" className="h-full w-full" preserveAspectRatio="xMidYMid meet">
       {/* window chrome */}
-      <rect x="14" y="12" width="212" height="86" rx="8" fill="oklch(0.16 0.012 270)" stroke={muted} />
+      <rect
+        x="14"
+        y="12"
+        width="212"
+        height="86"
+        rx="8"
+        fill="oklch(0.16 0.012 270)"
+        stroke={muted}
+      />
       <circle cx="24" cy="22" r="2" fill={muted} />
       <circle cx="32" cy="22" r="2" fill={muted} />
       <circle cx="40" cy="22" r="2" fill={muted} />
@@ -71,7 +79,12 @@ function CmsVisual() {
           height="8"
           fill={teal}
           animate={{ x: [74, 184, 184, 74], opacity: [1, 1, 0, 1] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", times: [0, 0.5, 0.85, 1] }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            ease: "easeInOut",
+            times: [0, 0.5, 0.85, 1],
+          }}
         />
       )}
     </svg>
@@ -86,7 +99,15 @@ function MedsVisual() {
   return (
     <svg viewBox="0 0 240 110" className="h-full w-full" preserveAspectRatio="xMidYMid meet">
       {/* phone frame */}
-      <rect x="90" y="10" width="60" height="90" rx="10" fill="oklch(0.16 0.012 270)" stroke={muted} />
+      <rect
+        x="90"
+        y="10"
+        width="60"
+        height="90"
+        rx="10"
+        fill="oklch(0.16 0.012 270)"
+        stroke={muted}
+      />
       <rect x="96" y="20" width="48" height="6" rx="2" fill={muted} opacity="0.5" />
       {/* pills */}
       <g>
@@ -141,7 +162,15 @@ function CoachVisual() {
   return (
     <svg viewBox="0 0 240 110" className="h-full w-full" preserveAspectRatio="xMidYMid meet">
       {/* map backdrop */}
-      <rect x="14" y="12" width="140" height="86" rx="8" fill="oklch(0.16 0.012 270)" stroke={muted} />
+      <rect
+        x="14"
+        y="12"
+        width="140"
+        height="86"
+        rx="8"
+        fill="oklch(0.16 0.012 270)"
+        stroke={muted}
+      />
       <path d="M14 50 Q 60 30 110 55 T 154 60" stroke={muted} strokeWidth="1" fill="none" />
       <path d="M14 78 Q 50 60 100 80 T 154 75" stroke={muted} strokeWidth="1" fill="none" />
       {/* pins */}
@@ -167,7 +196,15 @@ function CoachVisual() {
         <circle cx="130" cy="40" r="4" fill={teal} opacity="0.8" />
       </motion.g>
       {/* booking card */}
-      <rect x="166" y="20" width="60" height="70" rx="6" fill="oklch(0.18 0.012 270)" stroke={muted} />
+      <rect
+        x="166"
+        y="20"
+        width="60"
+        height="70"
+        rx="6"
+        fill="oklch(0.18 0.012 270)"
+        stroke={muted}
+      />
       <circle cx="180" cy="34" r="6" fill={teal} opacity="0.85" />
       <rect x="190" y="30" width="28" height="3.5" rx="1.5" fill={muted} opacity="0.7" />
       <rect x="190" y="36" width="20" height="3" rx="1.5" fill={muted} opacity="0.45" />
@@ -198,7 +235,15 @@ function LegalVisual() {
   return (
     <svg viewBox="0 0 240 110" className="h-full w-full" preserveAspectRatio="xMidYMid meet">
       {/* document */}
-      <rect x="50" y="14" width="100" height="86" rx="6" fill="oklch(0.16 0.012 270)" stroke={muted} />
+      <rect
+        x="50"
+        y="14"
+        width="100"
+        height="86"
+        rx="6"
+        fill="oklch(0.16 0.012 270)"
+        stroke={muted}
+      />
       <rect x="58" y="24" width="60" height="6" rx="2" fill={muted} opacity="0.6" />
       <rect x="58" y="38" width="84" height="3" rx="1.5" fill={muted} opacity="0.45" />
       <rect x="58" y="46" width="84" height="3" rx="1.5" fill={muted} opacity="0.45" />

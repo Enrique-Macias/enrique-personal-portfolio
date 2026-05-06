@@ -1,8 +1,11 @@
 import { motion } from "framer-motion";
 import { Github, Linkedin, Mail, ArrowRight } from "lucide-react";
 import { profile } from "@/data/profile";
+import { useLanguage } from "@/i18n";
 
 export function Hero() {
+  const { dictionary } = useLanguage();
+
   return (
     <section
       id="top"
@@ -25,7 +28,7 @@ export function Hero() {
           transition={{ duration: 0.5 }}
           className="font-mono text-xs uppercase tracking-[0.25em] text-muted-foreground"
         >
-          // Portfolio — 2026
+          {dictionary.hero.eyebrow}
         </motion.p>
 
         <motion.h1
@@ -50,7 +53,7 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.15 }}
           className="mt-8 max-w-2xl text-lg text-foreground/80 sm:text-xl"
         >
-          {profile.tagline}
+          {dictionary.profile.tagline}
         </motion.p>
 
         <motion.p
@@ -59,7 +62,7 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.22 }}
           className="mt-3 max-w-2xl text-sm text-muted-foreground sm:text-base"
         >
-          {profile.role}
+          {dictionary.profile.role}
         </motion.p>
 
         <motion.div
@@ -72,20 +75,20 @@ export function Hero() {
             href="#contact"
             className="group inline-flex items-center gap-2 rounded-full bg-gradient-brand px-5 py-2.5 text-sm font-medium text-[var(--background)] shadow-[0_8px_30px_-8px_oklch(0.82_0.14_180/0.6)] transition-transform hover:-translate-y-0.5"
           >
-            Get in touch
+            {dictionary.hero.cta}
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </a>
-          <IconLink href={profile.github} label="GitHub">
+          <IconLink href={profile.github} label={dictionary.hero.github}>
             <Github className="h-4 w-4" />
-            GitHub
+            {dictionary.hero.github}
           </IconLink>
-          <IconLink href={profile.linkedin} label="LinkedIn">
+          <IconLink href={profile.linkedin} label={dictionary.hero.linkedin}>
             <Linkedin className="h-4 w-4" />
-            LinkedIn
+            {dictionary.hero.linkedin}
           </IconLink>
-          <IconLink href={`mailto:${profile.email}`} label="Email">
+          <IconLink href={`mailto:${profile.email}`} label={dictionary.hero.email}>
             <Mail className="h-4 w-4" />
-            Email
+            {dictionary.hero.email}
           </IconLink>
         </motion.div>
       </div>

@@ -1,18 +1,14 @@
 import { useEffect, useState } from "react";
+import type { Language } from "@/i18n";
+import { useLanguage } from "@/i18n";
 
 const NAV_OFFSET = 72; // fixed navbar height (h-16 = 64px) + small gap
-
-const links = [
-  { id: "about", label: "About" },
-  { id: "featured", label: "Featured" },
-  { id: "projects", label: "Projects" },
-  { id: "experience", label: "Experience" },
-  { id: "contact", label: "Contact" },
-];
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState<string>("");
+  const { language, setLanguage, dictionary } = useLanguage();
+  const links = dictionary.navbar.links;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -73,7 +69,7 @@ export function Navbar() {
       window.removeEventListener("resize", onResize);
       window.clearTimeout(resizeTimer);
     };
-  }, []);
+  }, [links]);
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     const el = document.getElementById(id);
@@ -108,9 +104,7 @@ export function Navbar() {
                   onClick={(e) => handleClick(e, l.id)}
                   aria-current={isActive ? "true" : undefined}
                   className={`relative text-sm transition-colors ${
-                    isActive
-                      ? "text-foreground"
-                      : "text-muted-foreground hover:text-foreground"
+                    isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {l.label}
@@ -125,14 +119,59 @@ export function Navbar() {
             );
           })}
         </ul>
-        <a
-          href="#contact"
-          onClick={(e) => handleClick(e, "contact")}
-          className="hidden rounded-full border border-border px-4 py-1.5 text-sm text-foreground transition-colors hover:border-[var(--teal)]/60 hover:text-[var(--teal)] md:inline-block"
-        >
-          Get in touch
-        </a>
+        <div className="flex items-center gap-2">
+          <LanguageToggle
+            language={language}
+            label={dictionary.navbar.switchLabel}
+            onChange={setLanguage}
+          />
+          <a
+            href="#contact"
+            onClick={(e) => handleClick(e, "contact")}
+            className="hidden rounded-full border border-border px-4 py-1.5 text-sm text-foreground transition-colors hover:border-[var(--teal)]/60 hover:text-[var(--teal)] md:inline-block"
+          >
+            {dictionary.navbar.cta}
+          </a>
+        </div>
       </nav>
     </header>
+  );
+}
+
+function LanguageToggle({
+  language,
+  label,
+  onChange,
+}: {
+  language: Language;
+  label: string;
+  onChange: (language: Language) => void;
+}) {
+  return (
+    <div
+      className="inline-flex items-center rounded-full border border-border bg-background/40 p-0.5 font-mono text-xs"
+      aria-label={label}
+      role="group"
+    >
+      {(["en", "es"] as const).map((option) => {
+        const isActive = language === option;
+
+        return (
+          <button
+            key={option}
+            type="button"
+            onClick={() => onChange(option)}
+            aria-pressed={isActive}
+            className={`rounded-full px-2.5 py-1 uppercase transition-colors ${
+              isActive
+                ? "bg-foreground text-background"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {option}
+          </button>
+        );
+      })}
+    </div>
   );
 }

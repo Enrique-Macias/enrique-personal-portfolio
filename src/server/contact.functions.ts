@@ -17,14 +17,14 @@ export const sendContactMessage = createServerFn({ method: "POST" })
     if (!RESEND_API_KEY) {
       return {
         ok: false,
-        error: "Email service not configured yet. Add RESEND_API_KEY to enable the contact form.",
+        error: "emailServiceNotConfigured" as const,
       };
     }
 
     if (!TO_EMAIL) {
       return {
         ok: false,
-        error: "Email recipient not configured yet. Add TO_EMAIL to enable the contact form.",
+        error: "emailRecipientNotConfigured" as const,
       };
     }
 
@@ -54,7 +54,7 @@ export const sendContactMessage = createServerFn({ method: "POST" })
     if (!res.ok) {
       const text = await res.text().catch(() => "");
       console.error("Resend send failed:", res.status, text);
-      return { ok: false, error: "Failed to send. Please try email directly." };
+      return { ok: false, error: "sendFailed" as const };
     }
     return { ok: true };
   });
