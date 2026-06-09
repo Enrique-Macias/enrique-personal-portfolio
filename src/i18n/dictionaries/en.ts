@@ -151,6 +151,12 @@ export const en = {
     title: "Certifications.",
     items: [
       { name: "AWS Cloud Practitioner", issuer: "Amazon Web Services", year: "2026" },
+      {
+        name: "AWS Academy Graduate — Cloud Foundations",
+        issuer: "AWS Academy",
+        year: "2026",
+        url: "https://www.credly.com/badges/d051ea5a-4172-40aa-85f0-ed7b14d25a4f",
+      },
       { name: "GitHub Foundations", issuer: "GitHub", year: "2026" },
       { name: "OpenAI Coding with JavaScript", issuer: "Codecademy", year: "2025" },
       { name: "Learn MongoDB", issuer: "Codecademy", year: "2024" },

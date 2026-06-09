@@ -15,9 +15,9 @@ export function Certifications() {
           title={dictionary.certifications.title}
         />
         <div className="flex flex-wrap gap-3">
-          {certifications.map((c, i) => (
-            <RevealOnScroll key={c.name} delay={i * 0.05}>
-              <div className="flex items-center gap-3 rounded-2xl border border-border bg-card/50 px-4 py-3">
+          {certifications.map((c, i) => {
+            const card = (
+              <div className="flex items-center gap-3 rounded-2xl border border-border bg-card/50 px-4 py-3 transition-colors hover:border-[var(--teal)]/40 hover:bg-card">
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-brand/20">
                   <Award className="h-4 w-4 text-[var(--teal)]" />
                 </div>
@@ -28,8 +28,20 @@ export function Certifications() {
                   </p>
                 </div>
               </div>
-            </RevealOnScroll>
-          ))}
+            );
+
+            return (
+              <RevealOnScroll key={c.name} delay={i * 0.05}>
+                {c.url ? (
+                  <a href={c.url} target="_blank" rel="noopener noreferrer">
+                    {card}
+                  </a>
+                ) : (
+                  card
+                )}
+              </RevealOnScroll>
+            );
+          })}
         </div>
       </div>
     </section>
