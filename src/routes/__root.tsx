@@ -1,6 +1,17 @@
-import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import {
+  Outlet,
+  Link,
+  createRootRoute,
+  HeadContent,
+  Scripts,
+  redirect,
+} from "@tanstack/react-router";
 
-import { LanguageProvider, dictionaries, useLanguage } from "@/i18n";
+import { LanguageProvider, useLanguage } from "@/i18n";
+import { getPreferredLanguage } from "@/server/language.functions";
+import { pageHead } from "@/lib/metadata";
+import type { Language } from "@/i18n/types";
+import { MotionConfig } from "framer-motion";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -15,6 +26,7 @@ function NotFoundComponent() {
         <div className="mt-6">
           <Link
             to="/"
+            search={(previous) => ({ lang: previous.lang ?? "en" })}
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
             {dictionary.notFound.action}
@@ -26,19 +38,33 @@ function NotFoundComponent() {
 }
 
 export const Route = createRootRoute({
-  head: () => ({
+  validateSearch: (search: Record<string, unknown>): { lang?: Language } =>
+    search.lang === undefined ? {} : { lang: search.lang === "es" ? "es" : "en" },
+  beforeLoad: async ({ location, search }) => {
+    const paths = ["/", "/projects/passly", "/projects/rlvo", "/projects/orqentic-ai"];
+    if (paths.includes(location.pathname) && !new URLSearchParams(location.searchStr).has("lang")) {
+      const language = await getPreferredLanguage();
+      throw redirect({
+        to: location.pathname,
+        search: { ...search, lang: language },
+        hash: location.hash,
+        replace: true,
+        statusCode: 302,
+      });
+    }
+  },
+  loaderDeps: ({ search }) => ({ language: search.lang ?? "en" }),
+  loader: ({ deps }) => deps,
+  head: ({ loaderData }) => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: dictionaries.en.meta.rootTitle },
-      { name: "description", content: dictionaries.en.meta.rootDescription },
+      ...pageHead(loaderData?.language ?? "en").meta,
       { name: "author", content: "Enrique Macías López" },
-      { property: "og:title", content: dictionaries.en.meta.rootTitle },
-      { property: "og:description", content: dictionaries.en.meta.rootDescription },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
     ],
     links: [
+      { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
       {
         rel: "stylesheet",
         href: appCss,
@@ -51,13 +77,16 @@ export const Route = createRootRoute({
 });
 
 function RootShell({ children }: { children: React.ReactNode }) {
+  const { lang } = Route.useSearch();
   return (
-    <html lang="en">
+    <html lang={lang ?? "en"}>
       <head>
         <HeadContent />
       </head>
       <body>
-        <LanguageProvider>{children}</LanguageProvider>
+        <LanguageProvider>
+          <MotionConfig reducedMotion="user">{children}</MotionConfig>
+        </LanguageProvider>
         <Scripts />
       </body>
     </html>

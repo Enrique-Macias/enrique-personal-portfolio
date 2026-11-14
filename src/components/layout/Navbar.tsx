@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import type { Language } from "@/i18n";
+import { Link, useLocation } from "@tanstack/react-router";
+import { Menu, X } from "lucide-react";
 import { useLanguage } from "@/i18n";
-
-const NAV_OFFSET = 72; // fixed navbar height (h-16 = 64px) + small gap
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const [active, setActive] = useState<string>("");
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState("");
+  const { pathname } = useLocation();
   const { language, setLanguage, dictionary } = useLanguage();
   const links = dictionary.navbar.links;
 
@@ -18,6 +19,7 @@ export function Navbar() {
   }, []);
 
   useEffect(() => {
+    if (pathname !== "/") return;
     const sections = links
       .map((l) => document.getElementById(l.id))
       .filter((el): el is HTMLElement => Boolean(el));
@@ -31,7 +33,7 @@ export function Navbar() {
       visibility.clear();
       // On mobile, shrink the top margin so shorter sections still register.
       const isMobile = window.matchMedia("(max-width: 767px)").matches;
-      const topMargin = isMobile ? `-${NAV_OFFSET + 8}px` : "-35%";
+      const topMargin = isMobile ? `-${72 + 8}px` : "-35%";
       const bottomMargin = isMobile ? "-55%" : "-50%";
       observer = new IntersectionObserver(
         (entries) => {
@@ -69,109 +71,129 @@ export function Navbar() {
       window.removeEventListener("resize", onResize);
       window.clearTimeout(resizeTimer);
     };
-  }, [links]);
-
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    e.preventDefault();
-    const top = el.getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
-    window.scrollTo({ top, behavior: "smooth" });
-    history.replaceState(null, "", `#${id}`);
-    setActive(id);
-  };
+  }, [links, pathname]);
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "border-b border-border bg-background/70 backdrop-blur-xl"
-          : "border-b border-transparent"
-      }`}
+      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${scrolled || open || pathname !== "/" ? "border-b border-border bg-background/95 backdrop-blur-xl" : "border-b border-transparent"}`}
     >
-      <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-        <a href="#top" className="font-mono text-sm tracking-tight text-foreground">
+      <a
+        href="#main-content"
+        className="sr-only rounded-lg bg-card p-3 text-sm text-foreground focus:not-sr-only focus:fixed focus:left-4 focus:top-20"
+      >
+        {dictionary.accessibility.skip}
+      </a>
+      <nav
+        aria-label={dictionary.accessibility.navigation}
+        className="relative mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-3 px-6"
+      >
+        <Link
+          to="/"
+          search={{ lang: language }}
+          hash="top"
+          onClick={() => setOpen(false)}
+          className="inline-flex min-h-11 items-center font-mono text-sm tracking-tight text-foreground"
+        >
           <span className="text-gradient">eml</span>
           <span className="text-muted-foreground">.dev</span>
-        </a>
-        <ul className="hidden items-center gap-7 md:flex">
-          {links.map((l) => {
-            const isActive = active === l.id;
-            return (
-              <li key={l.id}>
-                <a
-                  href={`#${l.id}`}
-                  onClick={(e) => handleClick(e, l.id)}
-                  aria-current={isActive ? "true" : undefined}
-                  className={`relative text-sm transition-colors ${
-                    isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {l.label}
-                  <span
-                    aria-hidden
-                    className={`absolute -bottom-1.5 left-0 h-[2px] w-full rounded-full bg-gradient-brand transition-opacity duration-300 ${
-                      isActive ? "opacity-100" : "opacity-0"
-                    }`}
-                  />
-                </a>
-              </li>
-            );
-          })}
+        </Link>
+        <ul className="hidden items-center gap-6 md:flex">
+          {dictionary.navbar.links.map((link) => (
+            <li key={link.id}>
+              <Link
+                to="/"
+                search={{ lang: language }}
+                hash={link.id}
+                aria-current={pathname === "/" && active === link.id ? "location" : undefined}
+                className={`relative inline-flex min-h-11 items-center text-sm transition-colors ${pathname === "/" && active === link.id ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+              >
+                {link.label}
+                <span
+                  aria-hidden
+                  className={`absolute bottom-1 left-0 h-0.5 w-full rounded-full bg-gradient-brand transition-opacity ${pathname === "/" && active === link.id ? "opacity-100" : "opacity-0"}`}
+                />
+              </Link>
+            </li>
+          ))}
         </ul>
         <div className="flex items-center gap-2">
-          <LanguageToggle
-            language={language}
-            label={dictionary.navbar.switchLabel}
-            onChange={setLanguage}
-          />
-          <a
-            href="#contact"
-            onClick={(e) => handleClick(e, "contact")}
-            className="hidden rounded-full border border-border px-4 py-1.5 text-sm text-foreground transition-colors hover:border-[var(--teal)]/60 hover:text-[var(--teal)] md:inline-block"
+          <div
+            role="group"
+            aria-label={dictionary.navbar.switchLabel}
+            className="inline-flex items-center rounded-full border border-border bg-background/40 p-0.5 font-mono text-xs"
+          >
+            {(["en", "es"] as const).map((option) => (
+              <button
+                key={option}
+                type="button"
+                lang={option}
+                aria-label={option === "en" ? "English" : "Español"}
+                aria-pressed={language === option}
+                onClick={() => setLanguage(option)}
+                className={`min-h-10 min-w-10 rounded-full px-2.5 uppercase transition-colors ${language === option ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"}`}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+          <Link
+            to="/"
+            search={{ lang: language }}
+            hash="contact"
+            className="hidden min-h-11 items-center rounded-full border border-border px-4 text-sm hover:border-[var(--teal)] hover:text-[var(--teal)] lg:inline-flex"
           >
             {dictionary.navbar.cta}
-          </a>
+          </Link>
+          <button
+            type="button"
+            aria-label={dictionary.accessibility.menu}
+            aria-expanded={open}
+            aria-controls="mobile-navigation"
+            onClick={() => setOpen(!open)}
+            onKeyDown={(event) => {
+              if (event.key === "Escape") setOpen(false);
+            }}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border text-foreground md:hidden"
+          >
+            {open ? (
+              <X aria-hidden className="h-5 w-5" />
+            ) : (
+              <Menu aria-hidden className="h-5 w-5" />
+            )}
+          </button>
         </div>
       </nav>
+      {open && (
+        <nav
+          id="mobile-navigation"
+          aria-label={dictionary.accessibility.navigation}
+          className="border-t border-border bg-background px-6 py-3 md:hidden"
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              setOpen(false);
+              document
+                .querySelector<HTMLButtonElement>('[aria-controls="mobile-navigation"]')
+                ?.focus();
+            }
+          }}
+        >
+          <ul>
+            {dictionary.navbar.links.map((link) => (
+              <li key={link.id}>
+                <Link
+                  to="/"
+                  search={{ lang: language }}
+                  hash={link.id}
+                  onClick={() => setOpen(false)}
+                  className="block rounded-lg py-3 text-sm text-muted-foreground hover:text-foreground"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
     </header>
-  );
-}
-
-function LanguageToggle({
-  language,
-  label,
-  onChange,
-}: {
-  language: Language;
-  label: string;
-  onChange: (language: Language) => void;
-}) {
-  return (
-    <div
-      className="inline-flex items-center rounded-full border border-border bg-background/40 p-0.5 font-mono text-xs"
-      aria-label={label}
-      role="group"
-    >
-      {(["en", "es"] as const).map((option) => {
-        const isActive = language === option;
-
-        return (
-          <button
-            key={option}
-            type="button"
-            onClick={() => onChange(option)}
-            aria-pressed={isActive}
-            className={`rounded-full px-2.5 py-1 uppercase transition-colors ${
-              isActive
-                ? "bg-foreground text-background"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            {option}
-          </button>
-        );
-      })}
-    </div>
   );
 }

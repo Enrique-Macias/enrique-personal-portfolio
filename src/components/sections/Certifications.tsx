@@ -14,7 +14,19 @@ export function Certifications() {
           eyebrow={dictionary.certifications.eyebrow}
           title={dictionary.certifications.title}
         />
-        <div className="flex flex-wrap gap-3">
+        <RevealOnScroll>
+          <div className="mb-8 rounded-2xl border border-border bg-card/50 p-6 sm:p-8">
+            <p className="text-xl font-medium">{dictionary.education.school}</p>
+            <p className="mt-2 text-base text-muted-foreground">{dictionary.education.degree}</p>
+            <p className="mt-2 font-mono text-sm text-muted-foreground">
+              {dictionary.education.period}
+            </p>
+            <p className="mt-3 font-mono text-sm text-[var(--teal)]">
+              {dictionary.education.graduation}
+            </p>
+          </div>
+        </RevealOnScroll>
+        <div className="grid gap-4 sm:grid-cols-2">
           {certifications.map((c, i) => {
             const card = (
               <div className="flex items-center gap-3 rounded-2xl border border-border bg-card/50 px-4 py-3 transition-colors hover:border-[var(--teal)]/40 hover:bg-card">
@@ -24,7 +36,7 @@ export function Certifications() {
                 <div>
                   <p className="text-sm font-medium text-foreground">{c.name}</p>
                   <p className="font-mono text-xs text-muted-foreground">
-                    {c.issuer} · {c.year}
+                    {c.issuer} {c.year ? `· ${c.year}` : ""}
                   </p>
                 </div>
               </div>

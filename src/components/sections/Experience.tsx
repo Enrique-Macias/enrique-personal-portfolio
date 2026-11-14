@@ -13,10 +13,10 @@ export function Experience() {
           eyebrow={dictionary.experience.eyebrow}
           title={dictionary.experience.title}
         />
-        <ol className="relative ml-3 space-y-10 border-l border-border pl-8 sm:ml-4 sm:pl-10">
+        <div className="relative ml-3 space-y-10 border-l border-border pl-8 sm:ml-4 sm:pl-10">
           {experience.map((e, i) => (
             <RevealOnScroll key={e.company + i} delay={i * 0.05}>
-              <li className="relative">
+              <article className="relative">
                 <span
                   aria-hidden
                   className="absolute -left-[42px] top-1.5 h-3 w-3 rounded-full bg-gradient-brand ring-4 ring-background sm:-left-[46px]"
@@ -40,10 +40,10 @@ export function Experience() {
                     </li>
                   ))}
                 </ul>
-              </li>
+              </article>
             </RevealOnScroll>
           ))}
-        </ol>
+        </div>
       </div>
     </section>
   );

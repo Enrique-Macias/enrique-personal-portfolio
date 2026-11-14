@@ -1,62 +1,35 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import type { ReactNode } from "react";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import { dictionaries } from "./dictionaries";
-import { DEFAULT_LANGUAGE, LanguageContext } from "./language-context";
-import type { Dictionary, Language } from "./types";
+import { LanguageContext } from "./language-context";
+import type { Language } from "./types";
 
-const STORAGE_KEY = "portfolio-language";
-
+// The URL is the source of truth, so shared links and server-rendered metadata
+// use the same language as the page. No post-hydration language replacement.
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguageState] = useState<Language>(DEFAULT_LANGUAGE);
-  const [isReady, setIsReady] = useState(false);
-
+  const search = useSearch({ strict: false });
+  const navigate = useNavigate();
+  const language: Language = search.lang === "es" ? "es" : "en";
   useEffect(() => {
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    const nextLanguage = isLanguage(stored)
-      ? stored
-      : getLanguageFromNavigator(window.navigator.language);
-
-    setLanguageState(nextLanguage);
-    setIsReady(true);
-  }, []);
-
-  useEffect(() => {
-    document.documentElement.lang = language;
-    updateDocumentMeta(dictionaries[language]);
-
-    if (isReady) {
-      window.localStorage.setItem(STORAGE_KEY, language);
-    }
-  }, [isReady, language]);
-
+    const secure = window.location.protocol === "https:" ? "; Secure" : "";
+    document.cookie = `portfolio-language=${language}; Path=/; Max-Age=31536000; SameSite=Lax${secure}`;
+  }, [language]);
   const value = useMemo(
     () => ({
       language,
-      setLanguage: setLanguageState,
+      setLanguage: (next: Language) => {
+        void navigate({
+          to: ".",
+          search: (previous) => ({ ...previous, lang: next }),
+          hash: true,
+          replace: true,
+          resetScroll: false,
+        });
+      },
       dictionary: dictionaries[language],
     }),
-    [language],
+    [language, navigate],
   );
-
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
-}
-
-function isLanguage(value: string | null): value is Language {
-  return value === "en" || value === "es";
-}
-
-function getLanguageFromNavigator(language: string): Language {
-  return language.toLowerCase().startsWith("es") ? "es" : DEFAULT_LANGUAGE;
-}
-
-function updateDocumentMeta(dictionary: Dictionary) {
-  document.title = dictionary.meta.homeTitle;
-  setMetaContent("name", "description", dictionary.meta.homeDescription);
-  setMetaContent("property", "og:title", dictionary.meta.homeTitle);
-  setMetaContent("property", "og:description", dictionary.meta.homeOgDescription);
-}
-
-function setMetaContent(attribute: "name" | "property", value: string, content: string) {
-  const meta = document.querySelector<HTMLMetaElement>(`meta[${attribute}="${value}"]`);
-  meta?.setAttribute("content", content);
 }

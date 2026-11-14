@@ -14,6 +14,7 @@ type FormData = {
   name: string;
   email: string;
   message: string;
+  website?: string;
 };
 
 export function Contact() {
@@ -103,6 +104,7 @@ export function Contact() {
 
           <RevealOnScroll delay={0.05}>
             <form
+              noValidate
               onSubmit={handleSubmit(onSubmit)}
               className="relative overflow-hidden rounded-2xl border border-border bg-card/50 p-6 sm:p-8"
             >
@@ -114,25 +116,64 @@ export function Contact() {
                   <div className="h-full w-1/3 animate-[progress-slide_1.2s_ease-in-out_infinite] bg-gradient-brand" />
                 </div>
               )}
+              <div hidden aria-hidden="true">
+                <label htmlFor="contact-website">Website</label>
+                <input
+                  {...register("website")}
+                  id="contact-website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  maxLength={200}
+                />
+              </div>
               <fieldset disabled={isSubmitting} className="space-y-4">
-                <Field label={dictionary.contact.labels.name} error={errors.name?.message}>
+                <Field
+                  errorId="contact-name-error"
+                  label={dictionary.contact.labels.name}
+                  error={errors.name?.message}
+                >
                   <input
                     {...register("name")}
-                    className="w-full rounded-lg border border-border bg-background/60 px-3 py-2.5 text-sm text-foreground outline-none transition-colors focus:border-[var(--teal)]"
+                    id="contact-name"
+                    required
+                    aria-invalid={Boolean(errors.name)}
+                    aria-describedby={errors.name ? "contact-name-error" : undefined}
+                    maxLength={100}
+                    autoComplete="name"
+                    className="w-full rounded-lg border border-muted-foreground/60 bg-background/60 px-3 py-2.5 text-base text-foreground outline-none transition-colors focus:border-[var(--teal)]"
                   />
                 </Field>
-                <Field label={dictionary.contact.labels.email} error={errors.email?.message}>
+                <Field
+                  errorId="contact-email-error"
+                  label={dictionary.contact.labels.email}
+                  error={errors.email?.message}
+                >
                   <input
                     type="email"
                     {...register("email")}
-                    className="w-full rounded-lg border border-border bg-background/60 px-3 py-2.5 text-sm text-foreground outline-none transition-colors focus:border-[var(--teal)]"
+                    id="contact-email"
+                    required
+                    aria-invalid={Boolean(errors.email)}
+                    aria-describedby={errors.email ? "contact-email-error" : undefined}
+                    maxLength={255}
+                    autoComplete="email"
+                    className="w-full rounded-lg border border-muted-foreground/60 bg-background/60 px-3 py-2.5 text-base text-foreground outline-none transition-colors focus:border-[var(--teal)]"
                   />
                 </Field>
-                <Field label={dictionary.contact.labels.message} error={errors.message?.message}>
+                <Field
+                  errorId="contact-message-error"
+                  label={dictionary.contact.labels.message}
+                  error={errors.message?.message}
+                >
                   <textarea
                     rows={5}
                     {...register("message")}
-                    className="w-full resize-none rounded-lg border border-border bg-background/60 px-3 py-2.5 text-sm text-foreground outline-none transition-colors focus:border-[var(--teal)]"
+                    id="contact-message"
+                    required
+                    aria-invalid={Boolean(errors.message)}
+                    aria-describedby={errors.message ? "contact-message-error" : undefined}
+                    maxLength={2000}
+                    className="w-full resize-none rounded-lg border border-muted-foreground/60 bg-background/60 px-3 py-2.5 text-base text-foreground outline-none transition-colors focus:border-[var(--teal)]"
                   />
                 </Field>
                 <button
@@ -191,26 +232,36 @@ function createSchema(validation: { required: string; invalidEmail: string; tooS
     name: z.string().trim().min(1, validation.required).max(100),
     email: z.string().trim().email(validation.invalidEmail).max(255),
     message: z.string().trim().min(5, validation.tooShort).max(2000),
+    website: z.string().max(200).optional(),
   });
 }
 
 function Field({
   label,
   error,
+  errorId,
   children,
 }: {
   label: string;
   error?: string;
+  errorId: string;
   children: React.ReactNode;
 }) {
   return (
-    <label className="block">
-      <span className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
+    <div className="block">
+      <label
+        htmlFor={errorId.replace("-error", "")}
+        className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground"
+      >
         {label}
-      </span>
+      </label>
       <div className="mt-2">{children}</div>
-      {error && <span className="mt-1 block text-xs text-destructive">{error}</span>}
-    </label>
+      {error && (
+        <span id={errorId} className="mt-1 block text-xs text-destructive">
+          {error}
+        </span>
+      )}
+    </div>
   );
 }
 
@@ -233,7 +284,7 @@ function ContactLink({
       <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary/60 text-[var(--teal)] transition-colors group-hover:bg-gradient-brand group-hover:text-[var(--background)]">
         <Icon className="h-4 w-4" />
       </div>
-      <span className="text-sm text-foreground">{label}</span>
+      <span className="min-w-0 break-words text-sm text-foreground">{label}</span>
     </a>
   );
 }

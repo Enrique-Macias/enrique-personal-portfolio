@@ -1,0 +1,143 @@
+/* Scoped to decorative project artwork. Geometry stays identical during SSR. */
+.project-illustration {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 0.875rem;
+  background:
+    radial-gradient(ellipse at 15% 85%, oklch(0.82 0.14 180 / 0.09), transparent 60%),
+    radial-gradient(ellipse at 85% 15%, oklch(0.78 0.16 295 / 0.1), transparent 60%),
+    var(--background);
+}
+.project-illustration::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.13;
+  background-image: radial-gradient(var(--muted-foreground) 0.75px, transparent 0.75px);
+  background-size: 18px 18px;
+}
+.project-illustration--featured {
+  aspect-ratio: 8 / 5;
+  max-height: 320px;
+}
+.project-illustration--compact {
+  height: 112px;
+}
+.project-illustration > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.project-illustration .visual-panel {
+  fill: var(--card);
+  stroke: oklch(1 0 0 / 0.2);
+}
+.project-illustration .visual-inset {
+  fill: var(--secondary);
+  stroke: var(--border);
+}
+.project-illustration .visual-line {
+  stroke: oklch(1 0 0 / 0.2);
+}
+.project-illustration .visual-muted {
+  stroke: oklch(1 0 0 / 0.28);
+}
+.project-illustration .visual-muted-fill {
+  fill: oklch(1 0 0 / 0.2);
+}
+.project-illustration .visual-teal {
+  fill: var(--teal);
+}
+.project-illustration .visual-purple {
+  fill: var(--purple);
+}
+.project-illustration .visual-teal-stroke {
+  stroke: var(--teal);
+}
+.project-illustration .visual-purple-stroke {
+  stroke: var(--purple);
+}
+
+/* One quiet introduction under five seconds, then still. No perpetual loops.
+   Paused offscreen and entirely disabled by the reduced-motion media query. */
+@media (prefers-reduced-motion: no-preference) {
+  .project-illustration .visual-float {
+    animation: project-float 4.8s ease-in-out both;
+  }
+  .project-illustration .visual-trace {
+    animation: project-trace 4.8s ease-in-out both;
+  }
+  .project-illustration .visual-indicator {
+    animation: project-indicator 4.8s ease-in-out both;
+  }
+  .project-illustration .visual-scan {
+    animation: project-scan 4.8s ease-in-out both;
+  }
+  .project-illustration[data-active="false"] * {
+    animation-play-state: paused;
+  }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .project-illustration {
+    transition: border-color 300ms ease;
+  }
+  .project-illustration:hover {
+    border-color: oklch(0.82 0.14 180 / 0.4);
+  }
+}
+@keyframes project-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-4px);
+  }
+  70% {
+    transform: translateY(2px);
+  }
+}
+@keyframes project-trace {
+  0% {
+    stroke-dasharray: 0.12 0.88;
+    stroke-dashoffset: 0.12;
+    opacity: 0.35;
+  }
+  75% {
+    stroke-dasharray: 0.12 0.88;
+    stroke-dashoffset: -0.88;
+    opacity: 0.85;
+  }
+  100% {
+    stroke-dasharray: 1 0;
+    stroke-dashoffset: 0;
+    opacity: 0.65;
+  }
+}
+@keyframes project-indicator {
+  0%,
+  100% {
+    opacity: 0.8;
+  }
+  30% {
+    opacity: 0.35;
+  }
+  65% {
+    opacity: 1;
+  }
+}
+@keyframes project-scan {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translateY(24px);
+    opacity: 0.65;
+  }
+}

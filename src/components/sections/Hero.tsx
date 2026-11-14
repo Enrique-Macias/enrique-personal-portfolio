@@ -1,15 +1,24 @@
 import { motion } from "framer-motion";
-import { Github, Linkedin, Mail, ArrowRight } from "lucide-react";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { Github, Linkedin, ArrowRight, Download, Mail } from "lucide-react";
 import { profile } from "@/data/profile";
 import { useLanguage } from "@/i18n";
 
 export function Hero() {
-  const { dictionary } = useLanguage();
+  const { dictionary, language } = useLanguage();
+  const reduce = useReducedMotion();
+  const cvFiles = import.meta.glob("/public/cv/*.{pdf,PDF}", {
+    eager: true,
+    query: "?url",
+    import: "default",
+  });
+  const cvName = `Enrique_Macias_CV_${language.toUpperCase()}.pdf`;
+  const cvHref = `/public/cv/${cvName}` in cvFiles ? `/cv/${cvName}` : undefined;
 
   return (
     <section
       id="top"
-      className="relative flex min-h-screen items-center overflow-hidden px-6 pt-24"
+      className="relative flex min-h-screen items-center overflow-hidden px-6 pb-20 pt-32"
     >
       {/* ambient glows */}
       <div
@@ -23,19 +32,19 @@ export function Hero() {
 
       <div className="relative mx-auto w-full max-w-6xl">
         <motion.p
-          initial={{ opacity: 0, y: 8 }}
+          initial={reduce ? false : { opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: reduce ? 0 : 0.5 }}
           className="font-mono text-xs uppercase tracking-[0.25em] text-muted-foreground"
         >
           {dictionary.hero.eyebrow}
         </motion.p>
 
         <motion.h1
-          initial={{ opacity: 0, y: 14 }}
+          initial={reduce ? false : { opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.05 }}
-          className="mt-5 max-w-4xl text-5xl font-medium leading-[1.05] tracking-tight text-foreground sm:text-6xl md:text-7xl"
+          transition={{ duration: reduce ? 0 : 0.7, delay: reduce ? 0 : 0.05 }}
+          className="mt-5 max-w-4xl text-[clamp(2rem,10vw,3rem)] font-medium leading-[1.05] tracking-tight text-foreground sm:text-6xl md:text-7xl"
         >
           {profile.firstName}{" "}
           <span className="relative inline-block">
@@ -48,31 +57,39 @@ export function Hero() {
         </motion.h1>
 
         <motion.p
-          initial={{ opacity: 0, y: 10 }}
+          initial={reduce ? false : { opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.15 }}
+          transition={{ duration: reduce ? 0 : 0.6, delay: reduce ? 0 : 0.15 }}
           className="mt-8 max-w-2xl text-lg text-foreground/80 sm:text-xl"
-        >
-          {dictionary.profile.tagline}
-        </motion.p>
-
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.22 }}
-          className="mt-3 max-w-2xl text-sm text-muted-foreground sm:text-base"
         >
           {dictionary.profile.role}
         </motion.p>
 
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
+        <motion.p
+          initial={reduce ? false : { opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+          transition={{ duration: reduce ? 0 : 0.6, delay: reduce ? 0 : 0.22 }}
+          className="mt-3 max-w-2xl text-sm text-muted-foreground sm:text-base"
+        >
+          {dictionary.profile.specialization}
+        </motion.p>
+        <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+          {dictionary.profile.tagline}
+        </p>
+        <p className="mt-6 flex max-w-2xl items-start gap-2 text-sm leading-relaxed text-[var(--teal)]">
+          <span aria-hidden className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[var(--teal)]" />
+          {dictionary.profile.availability}
+        </p>
+        <p className="mt-2 text-sm text-muted-foreground">{dictionary.profile.location}</p>
+
+        <motion.div
+          initial={reduce ? false : { opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: reduce ? 0 : 0.6, delay: reduce ? 0 : 0.3 }}
           className="mt-10 flex flex-wrap items-center gap-3"
         >
           <a
-            href="#contact"
+            href="#selected-work"
             className="group inline-flex items-center gap-2 rounded-full bg-gradient-brand px-5 py-2.5 text-sm font-medium text-[var(--background)] shadow-[0_8px_30px_-8px_oklch(0.82_0.14_180/0.6)] transition-transform hover:-translate-y-0.5"
           >
             {dictionary.hero.cta}
@@ -90,6 +107,16 @@ export function Hero() {
             <Mail className="h-4 w-4" />
             {dictionary.hero.email}
           </IconLink>
+          {cvHref && (
+            <a
+              href={cvHref}
+              download={cvName}
+              className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm text-foreground"
+            >
+              <Download className="h-4 w-4" />
+              {dictionary.hero.downloadCV}
+            </a>
+          )}
         </motion.div>
       </div>
     </section>
